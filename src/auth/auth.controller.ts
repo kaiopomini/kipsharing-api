@@ -14,19 +14,12 @@ import {
 } from 'src/common/decorators';
 import { RefreshTokenGuard } from 'src/common/guards';
 import { AuthService } from './auth.service';
-import { AuthDto, CreateUserDto } from './dto';
+import { AuthDto } from './dto';
 import { Tokens } from './types';
 @ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(private authService: AuthService) {}
-
-  @Post('local/signup')
-  @Public()
-  @HttpCode(HttpStatus.CREATED)
-  signupLocal(@Body() dto: CreateUserDto): Promise<Tokens> {
-    return this.authService.signupLocal(dto);
-  }
 
   @Post('local/signin')
   @Public()
