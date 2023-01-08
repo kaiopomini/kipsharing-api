@@ -23,8 +23,6 @@ export class RolesGuard {
     const request = context.switchToHttp().getRequest();
     const id = request.user['sub'];
 
-    console.log('sub', id);
-
     const user = await this.prisma.user.findUnique({
       where: {
         id: id,
