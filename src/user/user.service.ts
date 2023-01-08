@@ -8,7 +8,7 @@ import { Tokens } from 'src/auth/types';
 import * as argon2 from 'argon2';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateUserDto, UpdateUserDto } from './dto';
-import { User } from '@prisma/client';
+import { User } from './entities/user.entity';
 
 @Injectable()
 export class UserService {
@@ -47,11 +47,17 @@ export class UserService {
     return tokens;
   }
 
-  async findAll() {
-    return await this.prisma.user.findMany({});
+  async findAll(): Promise<User[]> {
+    const users = await this.prisma.user.findMany({});
+    const returnUsers = users.map((user) => {
+      delete user.hash;
+      delete user.hashedRT;
+      return user;
+    });
+    return returnUsers;
   }
 
-  async findOne(id: string) {
+  async findOne(id: string): Promise<User> {
     const user = await this.prisma.user.findUnique({
       where: {
         id: id,
@@ -68,7 +74,11 @@ export class UserService {
     return user;
   }
 
-  async update(userId: string, id: string, updateUserDto: UpdateUserDto) {
+  async update(
+    userId: string,
+    id: string,
+    updateUserDto: UpdateUserDto,
+  ): Promise<User> {
     if (userId != id) {
       throw new ForbiddenException('Access Denied');
     }
